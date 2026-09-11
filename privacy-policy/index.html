@@ -229,6 +229,59 @@
                     após o envio. Nunca são gravados em disco, banco de dados
                     local ou qualquer serviço de terceiros.
                 </p>
+
+                <h3>Mensagens do WhatsApp Web</h3>
+                <p>
+                    A partir da versão 2.0, a extensão também consegue montar uma
+                    ordem de serviço a partir de uma mensagem recebida no
+                    <strong>WhatsApp Web</strong>, quando a seguradora envia o
+                    acionamento por lá em vez de um portal.
+                </p>
+                <p>
+                    Isso acontece <strong>somente por ação explícita do
+                    usuário</strong>: ele seleciona o texto da mensagem com o
+                    mouse e clica no ícone da extensão. Sem essa seleção e esse
+                    clique, a extensão não tem acesso nenhum à página do
+                    WhatsApp.
+                </p>
+                <table>
+                    <tr>
+                        <th>Dado</th>
+                        <th>Finalidade</th>
+                        <th>Armazenado?</th>
+                    </tr>
+                    <tr>
+                        <td>Texto que o usuário selecionou na mensagem</td>
+                        <td>Extrair os campos da OS (protocolo, endereço, serviço, agendamento)</td>
+                        <td>Não</td>
+                    </tr>
+                    <tr>
+                        <td>Nome da conversa aberta</td>
+                        <td>Lembrar qual corporativo e produto o usuário escolheu naquela conversa</td>
+                        <td>Sim — chrome.storage local, no computador do usuário</td>
+                    </tr>
+                </table>
+                <p>
+                    <strong>O conteúdo da mensagem não é transmitido nem
+                    gravado.</strong> A leitura do texto e a montagem da ordem de
+                    serviço acontecem inteiramente dentro do navegador do
+                    usuário. O que sai do computador são apenas os campos da OS
+                    já montados, para a mesma API do IA Assist usada pelos
+                    portais — exatamente como acontece com qualquer outra
+                    exportação.
+                </p>
+                <p>
+                    A extensão <strong>não declara permissão de acesso ao
+                    domínio do WhatsApp</strong>. O acesso é concedido pelo
+                    próprio navegador, para aquela aba, no momento em que o
+                    usuário clica no ícone, e expira quando ele sai da aba.
+                </p>
+                <p>
+                    A extensão não lê a lista de conversas, não lê outras
+                    conversas, não lê mensagens não lidas e não lê nada que o
+                    usuário não tenha selecionado. Também não envia mensagens
+                    pelo WhatsApp em nenhuma hipótese.
+                </p>
             </div>
 
             <div class="card">
