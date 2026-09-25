@@ -157,7 +157,7 @@
             <h1>Política de Privacidade</h1>
             <p>
                 IA Assist Exportador de Serviços &nbsp;·&nbsp; Última
-                atualização: maio de 2026
+                atualização: setembro de 2026
             </p>
         </header>
 
@@ -174,9 +174,12 @@
                 </p>
                 <div class="highlight">
                     Esta extensão
-                    <strong>não coleta, vende, compartilha nem monetiza</strong>
-                    dados de nenhum usuário. Todo o processamento ocorre
-                    localmente no navegador do usuário.
+                    <strong>não vende, compartilha nem monetiza</strong>
+                    dados de nenhum usuário. A leitura das ordens de serviço
+                    ocorre localmente no navegador do usuário. A única informação
+                    enviada ao desenvolvedor são registros de erro
+                    <strong>sem dados pessoais</strong>, que o usuário pode
+                    desligar (ver seção 3).
                 </div>
             </div>
 
@@ -200,7 +203,7 @@
                     <tr>
                         <td>Endereço do assegurado</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não</td>
+                        <td>Não. Exceção: vai no registro de erro, quando houver (seção 3)</td>
                     </tr>
                     <tr>
                         <td>Telefone do assegurado</td>
@@ -210,7 +213,7 @@
                     <tr>
                         <td>Dados da OS (serviço, datas, etc.)</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não</td>
+                        <td>Não. Exceção: vão no registro de erro, quando houver (seção 3)</td>
                     </tr>
                     <tr>
                         <td>URL da API (configurada pelo usuário)</td>
@@ -226,8 +229,11 @@
                 <p>
                     Os dados da OS são enviados exclusivamente para a URL de API
                     configurada pelo próprio usuário e descartados imediatamente
-                    após o envio. Nunca são gravados em disco, banco de dados
-                    local ou qualquer serviço de terceiros.
+                    após o envio. Os dados pessoais do segurado (nome, telefone,
+                    CPF, placa e chassi) nunca são gravados em disco, banco de
+                    dados local ou serviço de terceiros. A única exceção a este
+                    parágrafo é o registro de erros descrito na seção 3, que é
+                    enviado <strong>sem</strong> esses dados.
                 </p>
 
                 <h3>Mensagens do WhatsApp Web</h3>
@@ -285,7 +291,64 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">3</span>O que a extensão NÃO faz</h2>
+                <h2><span class="num">3</span>Registro de erros para o suporte</h2>
+                <p>
+                    A partir da versão 2.0.10, quando a extensão não consegue ler
+                    ou exportar uma ordem de serviço, ela envia um
+                    <strong>registro do erro</strong> ao suporte do IA Assist.
+                    Assim o problema é identificado e corrigido sem que o usuário
+                    precise enviar arquivos ou capturas de tela.
+                </p>
+                <table>
+                    <tr>
+                        <th>Dado enviado</th>
+                        <th>Finalidade</th>
+                    </tr>
+                    <tr>
+                        <td>Tipo do erro e mensagem técnica</td>
+                        <td>Saber o que falhou (campo não lido, OS recusada etc.)</td>
+                    </tr>
+                    <tr>
+                        <td>Versão da extensão, portal e número da OS</td>
+                        <td>Localizar o caso e a versão afetada</td>
+                    </tr>
+                    <tr>
+                        <td>Nome da empresa no IA Assist</td>
+                        <td>Saber qual cliente foi afetado</td>
+                    </tr>
+                    <tr>
+                        <td>Identificador aleatório da instalação</td>
+                        <td>Agrupar erros repetidos. Não identifica a pessoa.</td>
+                    </tr>
+                    <tr>
+                        <td>Cópia do texto da tela onde o erro ocorreu, sem dados pessoais</td>
+                        <td>Reproduzir e corrigir a leitura do portal</td>
+                    </tr>
+                </table>
+                <div class="highlight">
+                    <strong>Antes do envio</strong>, a extensão remove nome,
+                    telefone, CPF/CNPJ, e-mail, placa e chassi do segurado, tanto
+                    dos campos da ordem de serviço quanto do texto da tela. São
+                    mantidos o endereço do atendimento, o serviço e o modelo do
+                    veículo, que são os dados necessários para corrigir a leitura.
+                </div>
+                <p>
+                    Os registros ficam armazenados no <strong>Supabase</strong>,
+                    em servidores localizados em São Paulo (Brasil). São acessados
+                    apenas pela equipe de suporte, não são compartilhados nem
+                    vendidos e são <strong>apagados automaticamente após 60
+                    dias</strong>. O envio ocorre somente quando há um erro. A
+                    extensão não envia nada durante o uso normal.
+                </p>
+                <p>
+                    O usuário pode <strong>desligar este envio</strong> a qualquer
+                    momento no popup da extensão, em "Diagnóstico e suporte" →
+                    "Enviar erros automaticamente ao suporte".
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><span class="num">4</span>O que a extensão NÃO faz</h2>
                 <ul class="no-list">
                     <li>Não rastreia histórico de navegação</li>
                     <li>
@@ -301,8 +364,9 @@
                         Não usa <code>eval()</code> nem carrega scripts remotos
                     </li>
                     <li>
-                        Não envia dados para servidores do desenvolvedor da
-                        extensão
+                        Não envia dados pessoais para servidores do
+                        desenvolvedor da extensão. Envia apenas registros de erro
+                        sem dados pessoais, que podem ser desligados (seção 3).
                     </li>
                     <li>
                         Não vende, compartilha nem transfere dados a terceiros
@@ -312,7 +376,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">4</span>Armazenamento local</h2>
+                <h2><span class="num">5</span>Armazenamento local</h2>
                 <p>
                     A extensão utiliza
                     <strong>chrome.storage.sync</strong> exclusivamente para
@@ -338,7 +402,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">5</span>Segurança</h2>
+                <h2><span class="num">6</span>Segurança</h2>
                 <ul class="ok-list">
                     <li>
                         Toda comunicação com a API ocorre exclusivamente via
@@ -360,7 +424,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">6</span>Permissões utilizadas</h2>
+                <h2><span class="num">7</span>Permissões utilizadas</h2>
                 <table>
                     <tr>
                         <th>Permissão</th>
@@ -397,7 +461,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">7</span>Contato</h2>
+                <h2><span class="num">8</span>Contato</h2>
                 <p>
                     Em caso de dúvidas sobre esta Política de Privacidade, entre
                     em contato com o desenvolvedor responsável pela extensão
