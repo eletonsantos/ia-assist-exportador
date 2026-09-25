@@ -245,6 +245,23 @@
                     segurado. O endereço só é usado se a cidade do CEP for a
                     mesma da ordem de serviço.
                 </p>
+                <p>
+                    <strong>Portais abertos em segundo plano e aviso de serviço
+                    novo</strong> (a partir da versão 2.0.14): para o usuário não
+                    precisar deixar cada portal de seguradora aberto, a extensão
+                    abre as telas de acompanhamento desses portais numa
+                    <strong>janela minimizada do próprio navegador</strong>,
+                    usando a sessão (login) que o usuário já fez no navegador.
+                    Só são abertos os portais que o usuário já utilizou com
+                    login. Nessas telas a extensão lê os números das ordens de
+                    serviço e os avisos de serviço novo para aceitar, do mesmo
+                    jeito que faz nas abas abertas pelo usuário, e mostra o aviso
+                    na tela do IA Assist. <strong>A extensão não pede, não lê e
+                    não guarda a senha dos portais</strong>; quando a sessão
+                    expira, ela pede que o próprio usuário entre de novo. O
+                    recurso pode ser desligado no popup, em "Exportação
+                    automática".
+                </p>
 
                 <h3>Mensagens do WhatsApp Web</h3>
                 <p>
@@ -366,8 +383,13 @@
                         mouse)
                     </li>
                     <li>
-                        Não acessa páginas que não sejam a aba ativa no momento
-                        do mapeamento
+                        Não acessa páginas fora dos portais de seguradora
+                        listados e do IA Assist (o WhatsApp Web só com a seleção
+                        e o clique do usuário)
+                    </li>
+                    <li>
+                        Não pede, não lê e não guarda senhas dos portais das
+                        seguradoras
                     </li>
                     <li>Não executa código carregado de servidores externos</li>
                     <li>
