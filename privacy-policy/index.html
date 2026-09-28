@@ -286,6 +286,33 @@
                     salvar"</strong>. CPF/CNPJ, telefones e e-mails do cadastro
                     não saem da página.
                 </p>
+                <p>
+                    <strong>Uma janela só e atualização automática</strong> (a
+                    partir da versão 2.0.19): o trabalho em segundo plano (portais
+                    abertos, exportação automática, confirmação de chegada) fica
+                    em abas de <strong>uma única janela minimizada</strong> da
+                    extensão. A extensão também confere na Chrome Web Store se há
+                    versão nova e, quando o Chrome já a baixou, reinicia a si
+                    mesma num momento sem trabalho em andamento, para o Chrome
+                    instalar a atualização. Nenhum dado do usuário ou do segurado
+                    é enviado por isso.
+                </p>
+                <p>
+                    <strong>WebPrestador — aprendizado, opcional</strong> (a
+                    partir da versão 2.0.19): o portal WebPrestador
+                    (app.webprestador.com.br) ainda não é lido pela extensão. Para
+                    prepará-lo, o usuário que trabalha com ele pode ligar, no
+                    popup ("Exportação automática" → "Aprender a WebPrestador"),
+                    uma permissão <strong>opcional</strong> de acesso a esse site —
+                    o Chrome pede a autorização só a quem ligar, e ela pode ser
+                    desligada no mesmo lugar. Com ela ligada, a extensão
+                    <strong>não lê nem exporta ordens de serviço</strong> desse
+                    portal: apenas envia ao suporte cópias das telas (no máximo
+                    uma por tela por hora e 12 por dia, sem a tela de login e com
+                    a mesma remoção de dados pessoais da seção 3) e a sequência de
+                    passos quando o usuário aceita ou recusa um serviço, para
+                    aprender como os serviços chegam e como são exibidos.
+                </p>
 
                 <h3>Mensagens do WhatsApp Web</h3>
                 <p>
@@ -338,6 +365,22 @@
                     conversas, não lê mensagens não lidas e não lê nada que o
                     usuário não tenha selecionado. Também não envia mensagens
                     pelo WhatsApp em nenhuma hipótese.
+                </p>
+                <p>
+                    <strong>Melhoria da leitura</strong> (a partir da versão
+                    2.0.19): quando a leitura de uma mensagem selecionada dá
+                    problema (protocolo não encontrado, campo não lido, envio
+                    recusado ou linha não reconhecida), a extensão envia ao
+                    suporte apenas a <strong>estrutura</strong> da mensagem — os
+                    nomes dos rótulos da ficha (por exemplo "PROTOCOLO",
+                    "SERVIÇO", "TEL"), a forma das linhas que não reconheceu (as
+                    letras trocadas por "A" e os números por "9"), os nomes dos
+                    campos lidos e dos que faltaram, o serviço, o corporativo, o
+                    produto e a UF. <strong>O texto da mensagem, nomes,
+                    telefones, endereços e o número do protocolo não são
+                    enviados</strong>, e não há cópia da tela do WhatsApp. No
+                    máximo 15 envios por dia; desliga junto com o registro de
+                    erros (seção 3).
                 </p>
             </div>
 
@@ -419,8 +462,15 @@
                     de um portal cai, os horários e os minutos desde o login e sem
                     atividade, para ajustar a manutenção da sessão — sem dado
                     pessoal. A <strong>lista de municípios do IBGE</strong> vai
-                    dentro da extensão: nada é enviado para consultá-la. Fora
-                    disso, a extensão não envia nada durante o uso normal.
+                    dentro da extensão: nada é enviado para consultá-la. A partir
+                    da versão 2.0.19, também registra: a versão de/para quando a
+                    extensão se atualiza sozinha; a estrutura das mensagens do
+                    WhatsApp cuja leitura deu problema (seção 2, sem o texto); o
+                    endereço (sem números) das telas de portal em que a leitura
+                    automática não é feita; e, só para quem ligou o aprendizado
+                    da WebPrestador, as cópias de tela e os passos descritos na
+                    seção 2. Fora disso, a extensão não envia nada durante o uso
+                    normal.
                 </p>
                 <p>
                     O usuário pode <strong>desligar este envio</strong> a qualquer
@@ -440,7 +490,8 @@
                     <li>
                         Não acessa páginas fora dos portais de seguradora
                         listados e do IA Assist (o WhatsApp Web só com a seleção
-                        e o clique do usuário)
+                        e o clique do usuário; a WebPrestador só se o usuário
+                        ligar a permissão opcional)
                     </li>
                     <li>
                         Não pede, não lê e não guarda senhas dos portais das
@@ -542,6 +593,14 @@
                         <td>
                             Permitir o content script em páginas HTTPS da Juvo e
                             enviar dados para a API do usuário
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>optional_host_permissions: https://*.webprestador.com.br/*</code></td>
+                        <td>
+                            Opcional (a partir da versão 2.0.19): só é concedida
+                            se o usuário ligar "Aprender a WebPrestador" no popup;
+                            pode ser retirada no mesmo lugar
                         </td>
                     </tr>
                 </table>
