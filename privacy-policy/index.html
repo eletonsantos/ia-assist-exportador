@@ -469,8 +469,19 @@
                     endereço (sem números) das telas de portal em que a leitura
                     automática não é feita; e, só para quem ligou o aprendizado
                     da WebPrestador, as cópias de tela e os passos descritos na
-                    seção 2. Fora disso, a extensão não envia nada durante o uso
-                    normal.
+                    seção 2. A partir da versão 2.0.20, para preparar o trabalho
+                    com os portais sem abrir abas em segundo plano, também
+                    registra a <strong>forma das chamadas</strong> que as páginas
+                    dos portais fazem aos próprios servidores: o método, o endereço
+                    com os números e códigos trocados por um marcador, o código de
+                    resposta, os <strong>nomes</strong> dos campos enviados e
+                    recebidos (sem os valores), se a chamada leva identificação de
+                    login (sim/não, sem o código) e, quando houver, o nome do botão
+                    de ação clicado logo antes (ex.: "aceitar", "confirmar"). Cada
+                    chamada distinta no máximo uma vez por dia, até 50 por portal
+                    por dia. Nunca são enviados senhas, códigos de login, cookies,
+                    dados de clientes ou o conteúdo das respostas. Fora disso, a
+                    extensão não envia nada durante o uso normal.
                 </p>
                 <p>
                     O usuário pode <strong>desligar este envio</strong> a qualquer
@@ -486,7 +497,8 @@
                     <li>
                         Não monitora atividade do usuário (cliques, teclado,
                         mouse), exceto a sequência de passos de aceite e recusa
-                        de serviço nos portais, descrita na seção 3 (sem o que
+                        de serviço nos portais e o nome do botão de ação ligado a
+                        uma chamada do portal, descritos na seção 3 (sem o que
                         foi digitado)
                     </li>
                     <li>
