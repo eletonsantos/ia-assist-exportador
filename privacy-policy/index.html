@@ -380,8 +380,11 @@
                     <strong>Antes do envio</strong>, a extensão remove nome,
                     telefone, CPF/CNPJ, e-mail, placa e chassi do segurado, tanto
                     dos campos da ordem de serviço quanto do texto da tela. São
-                    mantidos o endereço do atendimento, o serviço e o modelo do
+                    mantidos o bairro, a cidade, o serviço e o modelo do
                     veículo, que são os dados necessários para corrigir a leitura.
+                    A partir da versão 2.0.17, a rua, o número, o complemento, o
+                    ponto de referência e o CEP também são removidos, assim como
+                    nomes de técnicos e do usuário logado no portal.
                 </div>
                 <p>
                     Os registros ficam armazenados no <strong>Supabase</strong>,
@@ -403,8 +406,21 @@
                     ocultos) e, nos portais MAWDY, Veniti, NEO, Maxpar e Porto
                     Seguro, uma cópia diária da tela da listagem de serviços,
                     no máximo 4 por portal por dia, para preparar o
-                    aceite do serviço direto pelo aviso. Fora disso, a extensão
-                    não envia nada durante o uso normal.
+                    aceite do serviço direto pelo aviso. A partir da versão
+                    2.0.17, quando o operador aceita ou recusa um serviço num
+                    portal, também é enviada a <strong>sequência de passos</strong>
+                    que ele fez (nomes dos botões, das janelas e das opções
+                    escolhidas), sem o que foi digitado e sem nomes de pessoas, no
+                    máximo 8 por portal por dia, para ensinar a extensão a aceitar
+                    e recusar pelo aviso. A partir da versão 2.0.18, também
+                    registra: quando a UF de uma OS é corrigida pela lista de
+                    municípios do IBGE (cidade, UF lida e UF final) ou não pode
+                    ser definida (a OS fica para conferência); e, quando a sessão
+                    de um portal cai, os horários e os minutos desde o login e sem
+                    atividade, para ajustar a manutenção da sessão — sem dado
+                    pessoal. A <strong>lista de municípios do IBGE</strong> vai
+                    dentro da extensão: nada é enviado para consultá-la. Fora
+                    disso, a extensão não envia nada durante o uso normal.
                 </p>
                 <p>
                     O usuário pode <strong>desligar este envio</strong> a qualquer
