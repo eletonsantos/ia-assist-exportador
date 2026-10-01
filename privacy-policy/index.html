@@ -157,7 +157,7 @@
             <h1>Política de Privacidade</h1>
             <p>
                 IA Assist Exportador de Serviços &nbsp;·&nbsp; Última
-                atualização: setembro de 2026
+                atualização: outubro de 2026
             </p>
         </header>
 
@@ -256,12 +256,95 @@
                     login. Nessas telas a extensão lê os números das ordens de
                     serviço e os avisos de serviço novo para aceitar, do mesmo
                     jeito que faz nas abas abertas pelo usuário, e mostra o aviso
-                    na tela do IA Assist. <strong>A extensão não pede, não lê e
-                    não guarda a senha dos portais</strong>; quando a sessão
-                    expira, ela pede que o próprio usuário entre de novo. O
-                    recurso pode ser desligado no popup, em "Exportação
-                    automática".
+                    na tela do IA Assist. <strong>A extensão não lê a senha
+                    salva no navegador</strong>; quando a sessão expira, ela pede
+                    que o próprio usuário entre de novo — ou, se o usuário
+                    escolheu guardar o login daquele portal, entra com ele (ver
+                    "Login guardado nos portais", abaixo). O recurso pode ser
+                    desligado no popup, em "Exportação automática".
                 </p>
+                <p>
+                    <strong>Leitura dos portais sem abrir abas</strong> (a partir
+                    da versão 2.0.20): nos portais em que a tela vem pronta do
+                    servidor (Aciona Fácil e Mondial), a extensão pede a mesma
+                    página que a aba abriria, usando a sessão (login) que o
+                    usuário já fez no navegador, e lê os números das ordens de
+                    serviço e os avisos de serviço novo <strong>sem abrir janela
+                    nem aba</strong>. Os dados lidos têm o mesmo uso descrito
+                    nesta seção. Quando a sessão expira, aparece só um aviso no
+                    IA Assist para o usuário entrar de novo. O recurso respeita o
+                    que o usuário desligou no popup.
+                </p>
+                <p>
+                    <strong>Empresa logada no portal</strong> (a partir da versão
+                    2.0.20): para quem tem mais de uma empresa no IA Assist, a
+                    extensão lê na tela do portal o nome da empresa logada e, se
+                    for diferente da empresa do IA Assist, pergunta ao usuário
+                    antes de exportar sozinha as ordens de serviço daquele
+                    portal. O nome da empresa e a resposta ficam só no computador
+                    do usuário e não são enviados a lugar nenhum.
+                </p>
+
+                <h3>Login guardado nos portais (opcional)</h3>
+                <p>
+                    A partir da versão 2.0.20, o usuário <strong>pode
+                    escolher</strong>, portal por portal, guardar o usuário e a
+                    senha que usa no portal da seguradora, para a extensão entrar
+                    sozinha quando a sessão expirar. É opcional: sem essa
+                    escolha, nenhuma senha é guardada.
+                </p>
+                <table>
+                    <tr>
+                        <th>Dado</th>
+                        <th>Finalidade</th>
+                        <th>Onde fica</th>
+                    </tr>
+                    <tr>
+                        <td>Usuário e senha do portal (informados pelo próprio usuário)</td>
+                        <td>Entrar naquele mesmo portal quando a sessão expira</td>
+                        <td>Só no computador do usuário (chrome.storage local), criptografados</td>
+                    </tr>
+                    <tr>
+                        <td>PIN criado pelo usuário</td>
+                        <td>Proteger os logins guardados</td>
+                        <td>Não é guardado (só uma chave tirada dele)</td>
+                    </tr>
+                </table>
+                <ul class="ok-list">
+                    <li>
+                        Usuário e senha são criptografados com
+                        <strong>AES-GCM de 256 bits</strong>, com uma chave
+                        tirada do PIN do usuário (PBKDF2-SHA256, 310 mil
+                        iterações). O PIN não é guardado.
+                    </li>
+                    <li>
+                        Por padrão, depois de digitado o PIN, a chave fica só na
+                        memória do navegador. Se o usuário marcar "Não pedir o
+                        PIN de novo neste computador", a chave fica guardada
+                        nesse computador como chave não exportável do navegador;
+                        nesse caso, quem usar o mesmo usuário do computador
+                        consegue fazer a extensão entrar nos portais, como
+                        acontece com as senhas salvas no próprio navegador.
+                    </li>
+                    <li>
+                        <strong>Os logins nunca saem do computador</strong>: não
+                        são enviados ao desenvolvedor, ao IA Assist, ao registro
+                        de erros nem a terceiros. São usados apenas para entrar
+                        no próprio portal ao qual pertencem.
+                    </li>
+                    <li>
+                        Ficam separados por empresa do IA Assist e por portal.
+                        O usuário pode apagar o login de um portal, ou todos, a
+                        qualquer momento no popup; desinstalar a extensão também
+                        os apaga.
+                    </li>
+                    <li>
+                        Para não bloquear a conta do usuário no portal, depois de
+                        uma senha recusada a extensão não tenta de novo sozinha, e
+                        faz no máximo 3 tentativas por hora. Ela nunca derruba
+                        outra sessão aberta com o mesmo usuário.
+                    </li>
+                </ul>
                 <p>
                     <strong>Confirmação de chegada</strong> (a partir da versão
                     2.0.15): quando uma ordem de serviço do Aciona Fácil, da
@@ -480,8 +563,31 @@
                     de ação clicado logo antes (ex.: "aceitar", "confirmar"). Cada
                     chamada distinta no máximo uma vez por dia, até 50 por portal
                     por dia. Nunca são enviados senhas, códigos de login, cookies,
-                    dados de clientes ou o conteúdo das respostas. Fora disso, a
-                    extensão não envia nada durante o uso normal.
+                    dados de clientes ou o conteúdo das respostas. Nos portais que
+                    usam mensagens contínuas (Tempo) ou consultas GraphQL (Notro),
+                    o mesmo vale para a <strong>forma</strong> dessas mensagens:
+                    o tipo da mensagem, o canal (sem números), os nomes dos campos
+                    e o texto da consulta escrita no próprio portal, com qualquer
+                    valor trocado por um marcador. Também a partir da versão
+                    2.0.20, registra: o <strong>resultado</strong> do login
+                    automático, para quem guardou o login (por exemplo
+                    "conectado" ou "senha recusada" — nunca o usuário ou a
+                    senha); e se a leitura sem abas funcionou em cada portal.
+                    Fora disso, a extensão não envia nada durante o uso normal.
+                </p>
+                <p>
+                    <strong>Volumetria</strong> (a partir da versão 2.0.20): para
+                    o relatório mensal de quantas ordens de serviço passam por
+                    cada empresa do IA Assist e por cada portal, a extensão
+                    envia, para cada OS, uma única vez: o portal, o tipo do
+                    evento (lida na listagem, oferecida para aceitar, aceita ou
+                    recusada pelo aviso) e um <strong>código embaralhado
+                    (hash)</strong> da OS — o número da OS não é enviado. Vão
+                    junto o nome da empresa no IA Assist e o identificador
+                    aleatório da instalação. Nenhum dado de cliente ou segurado.
+                    Esses números ficam no mesmo Supabase por até
+                    <strong>13 meses</strong> e desligam junto com o envio de
+                    erros (abaixo).
                 </p>
                 <p>
                     O usuário pode <strong>desligar este envio</strong> a qualquer
@@ -508,8 +614,11 @@
                         ligar a permissão opcional)
                     </li>
                     <li>
-                        Não pede, não lê e não guarda senhas dos portais das
-                        seguradoras
+                        Não lê as senhas salvas no navegador e não guarda senhas
+                        dos portais das seguradoras — a não ser que o próprio
+                        usuário escolha guardar o login de um portal (seção 2);
+                        nesse caso ficam só no computador dele, criptografadas,
+                        e nunca são enviadas a lugar nenhum
                     </li>
                     <li>Não executa código carregado de servidores externos</li>
                     <li>
@@ -547,6 +656,13 @@
                     extensão ou limpando os dados de extensões nas configurações
                     do Chrome.
                 </p>
+                <p>
+                    No próprio computador (chrome.storage local e IndexedDB da
+                    extensão), a extensão também guarda as preferências do popup
+                    e, só para quem escolheu, os logins dos portais
+                    criptografados e a chave de "não pedir o PIN de novo" (seção
+                    2). Nada disso é enviado.
+                </p>
                 <div class="highlight">
                     Nenhum dado pessoal de segurados é armazenado em nenhum
                     momento.
@@ -567,6 +683,11 @@
                     <li>
                         O token de API é transmitido apenas no cabeçalho
                         <code>Authorization</code> da requisição
+                    </li>
+                    <li>
+                        Logins de portal guardados pelo usuário (opcional):
+                        criptografia AES-GCM de 256 bits com chave tirada de um
+                        PIN do usuário (PBKDF2-SHA256), apenas no computador dele
                     </li>
                     <li>
                         Todo o código da extensão é compilado localmente (Vite)
