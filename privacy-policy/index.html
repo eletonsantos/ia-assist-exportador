@@ -167,10 +167,14 @@
                 <p>
                     O <strong>IA Assist Exportador de Serviços</strong> é uma
                     extensão Chrome desenvolvida para uso interno corporativo.
-                    Seu único propósito é ler dados de Ordens de Serviço
-                    exibidos na tela da plataforma <strong>Juvo</strong> e
-                    exportá-los para o sistema <strong>IA Assist</strong> por
-                    meio de uma API configurada pelo próprio usuário.
+                    Seu único propósito é ler dados de Ordens de Serviço exibidos
+                    nos <strong>portais das seguradoras/assistências</strong>
+                    atendidos (Juvo/Tempo, Notro, Aciona Fácil, Tokio, Mondial,
+                    Maxpar, Veniti, MIA/MAWDY, Porto Seguro, NEO) e em
+                    <strong>mensagens do WhatsApp Web selecionadas pelo usuário</strong>,
+                    e exportá-los para o sistema <strong>IA Assist</strong>,
+                    usando a sessão que o próprio usuário já tem aberta no IA
+                    Assist.
                 </p>
                 <div class="highlight">
                     Esta extensão
@@ -181,6 +185,14 @@
                     <strong>sem dados pessoais</strong>, que o usuário pode
                     desligar (ver seção 3).
                 </div>
+                <p>
+                    <strong>Tudo começa desligado</strong> (a partir da versão
+                    2.0.20): ao instalar ou atualizar, nenhuma função automática
+                    (exportar sozinho, dar baixa, avisar serviço novo,
+                    aceitar/recusar pelo aviso, aviso de chegada) vem ligada. Um
+                    aviso no IA Assist apresenta as novidades e o usuário escolhe
+                    o que ativar, portal por portal.
+                </p>
             </div>
 
             <div class="card">
@@ -236,6 +248,13 @@
                     enviado <strong>sem</strong> esses dados.
                 </p>
                 <p>
+                    <strong>Origem da exportação</strong> (a partir da versão
+                    2.0.20): na observação da ordem de serviço enviada ao IA Assist,
+                    a extensão acrescenta de onde ela veio — "via exportador
+                    automático" ou "exportado pelo operador" — para distinguir no
+                    IA Assist. É só um texto; nenhum dado pessoal a mais.
+                </p>
+                <p>
                     <strong>Consulta de CEP</strong> (a partir da versão 2.0.12):
                     quando o portal da seguradora não informa a rua do
                     atendimento, mas informa o CEP, a extensão consulta esse CEP
@@ -283,6 +302,38 @@
                     antes de exportar sozinha as ordens de serviço daquele
                     portal. O nome da empresa e a resposta ficam só no computador
                     do usuário e não são enviados a lugar nenhum.
+                </p>
+
+                <p>
+                    <strong>Trabalho sem abrir abas (quadro dentro da página)</strong>
+                    (a partir da versão 2.0.20): para não ficar abrindo abas no
+                    computador do usuário, a exportação, a baixa, a leitura da
+                    oferta e o login automático passam a rodar num
+                    <strong>quadro invisível dentro de uma aba do portal que já
+                    está aberta</strong> (a do próprio usuário, quando ele está
+                    sem mexer nela há 30 segundos, ou uma aba na janela minimizada
+                    da extensão). Nada aparece na frente do usuário e nenhuma aba
+                    nova é aberta para isso. Se não houver uma aba do portal, o
+                    trabalho espera. A opção <strong>"Manter aberto em segundo
+                    plano"</strong> (uma janela minimizada) é escolhida pelo
+                    usuário, portal por portal, e vem desligada. Nos portais em
+                    que o login vale só na aba em que foi feito (MAWDY, Veniti,
+                    NEO, Maxpar), quando o usuário liga essa opção a extensão
+                    <strong>leva a aba já logada dele para a janela minimizada</strong>,
+                    sem recriar o login.
+                </p>
+                <p>
+                    <strong>Leitura da Tempo e da Notro sem aba</strong> (a partir
+                    da versão 2.0.20): para saber se há serviço novo sem manter o
+                    portal aberto, a extensão usa o <strong>login que a própria
+                    página desses portais guarda</strong> (o token de sessão da
+                    Tempo e da Notro). Esse token é lido quando o usuário está com
+                    o portal aberto e fica <strong>só na memória do navegador</strong>
+                    (é apagado quando o Chrome fecha); nunca é gravado em disco
+                    nem enviado ao desenvolvedor, ao IA Assist ou a terceiros. É
+                    usado apenas para consultar, no servidor do próprio portal, a
+                    contagem de serviços e a lista de solicitações — nunca para
+                    aceitar, recusar ou alterar nada.
                 </p>
 
                 <h3>Login guardado nos portais (opcional)</h3>
@@ -573,6 +624,9 @@
                     automático, para quem guardou o login (por exemplo
                     "conectado" ou "senha recusada" — nunca o usuário ou a
                     senha); e se a leitura sem abas funcionou em cada portal.
+                    Também registra o <strong>estado de conexão de cada portal</strong>
+                    (conectado ou desconectado), para o suporte saber se o cliente
+                    conseguiu entrar — sem usuário, senha ou qualquer dado pessoal.
                     Fora disso, a extensão não envia nada durante o uso normal.
                 </p>
                 <p>
@@ -690,8 +744,8 @@
                         PIN do usuário (PBKDF2-SHA256), apenas no computador dele
                     </li>
                     <li>
-                        Todo o código da extensão é compilado localmente (Vite)
-                        e incluído no pacote — nenhum código remoto é carregado
+                        Todo o código da extensão é incluído no pacote — nenhum
+                        código remoto é carregado nem executado
                     </li>
                 </ul>
             </div>
@@ -724,10 +778,21 @@
                         </td>
                     </tr>
                     <tr>
-                        <td><code>host_permissions: https://*/*</code></td>
+                        <td><code>tabs</code> / <code>alarms</code> / <code>sidePanel</code></td>
                         <td>
-                            Permitir o content script em páginas HTTPS da Juvo e
-                            enviar dados para a API do usuário
+                            Identificar as abas dos portais já abertas, agendar as
+                            leituras periódicas e abrir o painel lateral
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>host_permissions</code> (lista fixa de portais)</td>
+                        <td>
+                            Ler e exportar apenas nos domínios dos portais
+                            atendidos e do IA Assist, declarados um a um no
+                            manifesto (Juvo/Tempo, Notro, Aciona Fácil, Tokio,
+                            Mondial, Maxpar, Veniti, MIA/MAWDY, Porto Seguro, NEO
+                            e IA Assist). A extensão <strong>não</strong> pede
+                            acesso a "todos os sites".
                         </td>
                     </tr>
                     <tr>
