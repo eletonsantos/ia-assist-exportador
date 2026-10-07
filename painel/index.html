@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel do Exportador — IA Assist</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap">
+<style>
+  :root{
+    --bg:#f3f2ef; --surface:#ffffff; --surface2:#f8f7f5; --line:#e4e2dd;
+    --ink:#23262b; --mut:#8c8f96; --accent:#e0452c; --accent-ink:#fff;
+    --on:#1f9d63; --onbg:#e7f6ee; --off:#aab0b8; --offbg:#eef0f2;
+    --danger:#cf4040; --dangerbg:#fbeceb;
+    --shadow:0 6px 24px rgba(20,22,27,.08);
+    --disp:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+    --bg:#14161b; --surface:#1b1e24; --surface2:#20242b; --line:#2b3039;
+    --ink:#e7e9ec; --mut:#9aa1ac; --accent:#ff5a3c; --accent-ink:#1a0f0c;
+    --on:#36c489; --onbg:#11312435; --off:#5a626d; --offbg:#262b33;
+    --danger:#f26b6b; --dangerbg:#3a1f2255; --shadow:0 8px 28px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }}
+  :root[data-theme="dark"]{
+    --bg:#14161b; --surface:#1b1e24; --surface2:#20242b; --line:#2b3039;
+    --ink:#e7e9ec; --mut:#9aa1ac; --accent:#ff5a3c; --accent-ink:#1a0f0c;
+    --on:#36c489; --onbg:#11312435; --off:#5a626d; --offbg:#262b33;
+    --danger:#f26b6b; --dangerbg:#3a1f2255; --shadow:0 8px 28px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body)}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+  .wrap{max-width:860px;margin:0 auto;padding-block:20px;padding-left:16px;padding-right:16px}
+  header.top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .logo{width:36px;height:36px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font:800 15px var(--disp);flex:0 0 auto}
+  h1{font:800 20px/1.2 var(--disp);margin:0;letter-spacing:.01em}
+  .sub{color:var(--mut);font-size:12.5px;margin-top:1px}
+  .btn{font:700 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:9px;padding:8px 12px;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn.p{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .btn.g{color:var(--mut)}
+  .btn.sm{padding:5px 9px;font-size:12px;border-radius:8px}
+  .btn:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .spacer{flex:1}
+  .msg{border-radius:10px;padding:10px 12px;font-size:13px;margin:10px 0;display:none}
+  .msg.show{display:block}
+  .msg.ok{background:var(--onbg);color:var(--on)}
+  .msg.err{background:var(--dangerbg);color:var(--danger)}
+  .gate{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:22px;max-width:420px;margin:40px auto}
+  .gate h2{font:800 17px var(--disp);margin:0 0 4px}
+  .gate p{color:var(--mut);font-size:13px;margin:0 0 16px}
+  .field{display:block;margin-bottom:12px}
+  .field span{display:block;font-size:12px;color:var(--mut);margin-bottom:4px;font-weight:600}
+  input[type=password],input[type=text]{width:100%;font:15px var(--body);color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;outline:none}
+  input:focus{border-color:var(--accent)}
+  .toolbar{display:flex;gap:8px;align-items:center;margin:14px 0 10px;flex-wrap:wrap}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px 16px 14px;margin-bottom:14px}
+  .card.dirty{border-color:var(--accent)}
+  .chead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .cid{font:800 16px var(--disp)}
+  .cid.global{color:var(--accent)}
+  .cmeta{color:var(--mut);font-size:11.5px;font-variant-numeric:tabular-nums}
+  .sect{margin-top:14px}
+  .sect h3{font:700 11.5px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--mut);margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font:600 12.5px var(--body);border:1px solid var(--line);background:var(--offbg);color:var(--mut);border-radius:999px;padding:6px 12px;cursor:pointer;user-select:none;display:inline-flex;align-items:center;gap:6px}
+  .chip .dot{width:7px;height:7px;border-radius:50%;background:var(--off)}
+  .chip.on{background:var(--onbg);color:var(--on);border-color:transparent}
+  .chip.on .dot{background:var(--on)}
+  .chip.muted{opacity:.45;pointer-events:none}
+  .trava{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--danger);cursor:pointer;margin-left:auto}
+  .trava input{accent-color:var(--danger);width:15px;height:15px}
+  .cfoot{display:flex;gap:8px;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+  .note{background:var(--dangerbg);color:var(--danger);font-size:12px;border-radius:8px;padding:7px 10px;margin-top:8px;display:none}
+  .note.show{display:block}
+  footer{color:var(--mut);font-size:12px;text-align:center;margin:18px 0 6px;line-height:1.6}
+  code{background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo">IA</div>
+    <div>
+      <h1>Painel do Exportador</h1>
+      <div class="sub">Liga/desliga o automático e o segundo plano por cliente — a extensão obedece em ~5 min.</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn g sm" id="btLock" hidden>Trancar</button>
+  </header>
+
+  <div class="msg" id="msg"></div>
+
+  <div class="gate" id="gateSet" hidden>
+    <h2>Definir a senha do painel</h2>
+    <p>Este painel ainda não tem senha. Crie uma — só quem tiver ela poderá ligar/desligar os clientes.</p>
+    <label class="field"><span>Nova senha (mín. 6)</span><input type="password" id="setA" autocomplete="new-password"></label>
+    <label class="field"><span>Repita a senha</span><input type="password" id="setB" autocomplete="new-password"></label>
+    <button class="btn p" id="btSet" style="width:100%">Definir senha</button>
+  </div>
+
+  <div class="gate" id="gateLogin" hidden>
+    <h2>Entrar no painel</h2>
+    <p>Digite a senha de administrador.</p>
+    <label class="field"><span>Senha</span><input type="password" id="logPw" autocomplete="current-password"></label>
+    <label class="row" style="gap:7px;font-size:12.5px;color:var(--mut);margin-bottom:14px"><input type="checkbox" id="logRemember" checked> Lembrar neste computador</label>
+    <button class="btn p" id="btLogin" style="width:100%">Entrar</button>
+  </div>
+
+  <div id="panel" hidden>
+    <div class="toolbar">
+      <input type="text" id="novoId" placeholder="subdomínio do cliente (ex.: ilhabella)" style="max-width:280px">
+      <button class="btn" id="btAdd">+ Adicionar cliente</button>
+      <div class="spacer"></div>
+      <button class="btn g sm" id="btReload">Recarregar</button>
+    </div>
+    <div id="cards"></div>
+    <footer>
+      O <b>desligar</b> tem prioridade sobre o <b>ligar</b> (a trava vence). O painel força a configuração: se o cliente mudar no popup, aqui religa no próximo ciclo.<br>
+      O cliente precisa estar na versão <code>2.1.1</code> ou superior.
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var URL="https://mnflxdskuadogsomyxpl.supabase.co/rest/v1/rpc/";
+  var KEY="sb_publishable_mX9-y2rEKO30mNnHlHoFGg_ppkUpvOi";
+  var LS="iaAssistPainelSenha";
+  var AUTO=[["tokio_marine","Tokio"],["aciona_facil","Aciona Fácil"],["mondial","Mondial"],["juvo","Juvo / Tempo"],["notro","Notro"],["mawdy","MAWDY"]];
+  var SEG=[["aciona_facil","Aciona Fácil"],["mondial","Mondial"],["juvo","Juvo / Tempo"],["notro","Notro"],["tokio_marine","Tokio"],["mawdy","MAWDY"],["veniti","Veniti"],["neo","NEO"],["maxpar","Maxpar"]];
+  var senha="";
+  var $=function(id){return document.getElementById(id);};
+  function show(el,on){ el.hidden=!on; }
+  function msg(txt,kind){ var m=$("msg"); m.textContent=txt; m.className="msg show "+(kind||"ok"); if(kind!=="err") setTimeout(function(){ m.className="msg"; },3500); }
+  function clearMsg(){ $("msg").className="msg"; }
+
+  async function rpc(fn,args){
+    var r=await fetch(URL+fn,{method:"POST",headers:{apikey:KEY,"Content-Type":"application/json"},body:JSON.stringify(args||{})});
+    var t=await r.text(); var d=null; try{ d=t?JSON.parse(t):null; }catch(e){ d=t; }
+    if(!r.ok) throw new Error((d&&d.message)||(typeof d==="string"?d:"")||("Erro "+r.status));
+    return d;
+  }
+
+  (async function init(){
+    try{
+      var tem=await rpc("admin_config_tem_senha",{});
+      if(!tem){ show($("gateSet"),true); $("setA").focus(); return; }
+    }catch(e){ msg("Não consegui falar com o servidor: "+e.message,"err"); show($("gateLogin"),true); return; }
+    var guard=""; try{ guard=localStorage.getItem(LS)||""; }catch(e){}
+    if(guard){ senha=guard; try{ await carregar(); return; }catch(e){ senha=""; } }
+    show($("gateLogin"),true); $("logPw").focus();
+  })();
+
+  $("btSet").onclick=async function(){
+    var a=$("setA").value, b=$("setB").value;
+    if(a.length<6){ msg("A senha precisa ter ao menos 6 caracteres.","err"); return; }
+    if(a!==b){ msg("As duas senhas não são iguais.","err"); return; }
+    this.disabled=true;
+    try{
+      var r=await rpc("admin_config_definir_senha",{p_nova:a});
+      if(String(r).indexOf("ok")===0){ senha=a; try{ localStorage.setItem(LS,a); }catch(e){} show($("gateSet"),false); await carregar(); msg("Senha definida."); }
+      else msg(String(r),"err");
+    }catch(e){ msg(e.message,"err"); }
+    this.disabled=false;
+  };
+
+  $("btLogin").onclick=entrar;
+  $("logPw").addEventListener("keydown",function(e){ if(e.key==="Enter") entrar(); });
+  async function entrar(){
+    var pw=$("logPw").value; if(!pw){ return; }
+    $("btLogin").disabled=true;
+    try{
+      senha=pw; await carregar();
+      if($("logRemember").checked){ try{ localStorage.setItem(LS,pw); }catch(e){} }
+      show($("gateLogin"),false); clearMsg();
+    }catch(e){ senha=""; msg("Senha incorreta.","err"); }
+    $("btLogin").disabled=false;
+  }
+
+  $("btLock").onclick=function(){ try{ localStorage.removeItem(LS); }catch(e){} location.reload(); };
+  $("btReload").onclick=function(){ carregar().catch(function(e){ msg(e.message,"err"); }); };
+
+  async function carregar(){
+    var linhas=await rpc("admin_config_listar",{p_senha:senha});
+    show($("panel"),true); show($("btLock"),true);
+    var byId={}; (linhas||[]).forEach(function(l){ byId[l.id]=l; });
+    if(!byId.global) linhas.unshift({id:"global",dados:{},observacao:null,atualizado_em:null});
+    linhas.sort(function(a,b){ if(a.id==="global")return -1; if(b.id==="global")return 1; return a.id<b.id?-1:1; });
+    var cont=$("cards"); cont.textContent="";
+    linhas.forEach(function(l){ cont.appendChild(cardDe(l)); });
+  }
+
+  $("btAdd").onclick=function(){
+    var id=($("novoId").value||"").trim().toLowerCase().replace(/[^a-z0-9_-]/g,"");
+    if(!id){ msg("Digite o subdomínio do cliente (ex.: ilhabella).","err"); return; }
+    if(document.querySelector('[data-cid="'+id+'"]')){ msg("Esse cliente já está na lista.","err"); return; }
+    $("novoId").value="";
+    var c=cardDe({id:id,dados:{},observacao:null,atualizado_em:null,_novo:true});
+    $("cards").appendChild(c); c.scrollIntoView({behavior:"smooth",block:"center"});
+  };
+
+  function getAuto(d,p){ return !!(d.ligar&&d.ligar.automatico&&d.ligar.automatico[p]===true); }
+  function getSeg(d,p){ return !!(d.ligar&&d.ligar.segundo_plano&&d.ligar.segundo_plano[p]===true); }
+  function getTrava(d){ return !!(d.desligar&&d.desligar.automacao&&d.desligar.automacao.todos===true); }
+
+  function cardDe(l){
+    var d=JSON.parse(JSON.stringify(l.dados||{}));
+    var card=document.createElement("div"); card.className="card"; card.setAttribute("data-cid",l.id);
+    function marcar(){ card.classList.add("dirty"); btSave.disabled=false; }
+
+    var head=document.createElement("div"); head.className="chead";
+    var cid=document.createElement("div"); cid.className="cid"+(l.id==="global"?" global":""); cid.textContent=l.id==="global"?"GLOBAL (todos os clientes)":l.id;
+    var meta=document.createElement("div"); meta.className="cmeta";
+    meta.textContent=l.atualizado_em?("atualizado "+new Date(l.atualizado_em).toLocaleString("pt-BR")):(l._novo?"novo — ainda não salvo":"");
+    head.appendChild(cid); head.appendChild(meta); card.appendChild(head);
+
+    var sAuto=document.createElement("div"); sAuto.className="sect";
+    var hAuto=document.createElement("h3"); hAuto.textContent="Exportação automática";
+    var trava=document.createElement("label"); trava.className="trava";
+    var tchk=document.createElement("input"); tchk.type="checkbox"; tchk.checked=getTrava(d);
+    trava.appendChild(tchk); trava.appendChild(document.createTextNode("Travar desligado"));
+    hAuto.appendChild(trava); sAuto.appendChild(hAuto);
+    var qAuto=document.createElement("div"); qAuto.className="row"; qAuto.style.marginBottom="8px";
+    var bTodos=mkBtn("Ligar todos"), bLimpa=mkBtn("Limpar");
+    qAuto.appendChild(bTodos); qAuto.appendChild(bLimpa); sAuto.appendChild(qAuto);
+    var chipsAuto=document.createElement("div"); chipsAuto.className="chips";
+    var autoChips={};
+    AUTO.forEach(function(pr){
+      var ch=mkChip(pr[1], getAuto(d,pr[0]));
+      ch.onclick=function(){ setAuto(pr[0], !getAuto(d,pr[0])); render(); marcar(); };
+      autoChips[pr[0]]=ch; chipsAuto.appendChild(ch);
+    });
+    sAuto.appendChild(chipsAuto);
+    var noteTrava=document.createElement("div"); noteTrava.className="note"; noteTrava.textContent="Travado: o automático fica desligado para este cliente, mesmo com portais marcados.";
+    sAuto.appendChild(noteTrava);
+    card.appendChild(sAuto);
+
+    bTodos.onclick=function(){ AUTO.forEach(function(pr){ setAuto(pr[0],true); }); render(); marcar(); };
+    bLimpa.onclick=function(){ AUTO.forEach(function(pr){ setAuto(pr[0],false); }); render(); marcar(); };
+    tchk.onchange=function(){ setTrava(tchk.checked); render(); marcar(); };
+
+    var sSeg=document.createElement("div"); sSeg.className="sect";
+    var hSeg=document.createElement("h3"); hSeg.textContent="Abrir em segundo plano (janela minimizada)";
+    sSeg.appendChild(hSeg);
+    var qSeg=document.createElement("div"); qSeg.className="row"; qSeg.style.marginBottom="8px";
+    var bSTodos=mkBtn("Ligar todos"), bSLimpa=mkBtn("Limpar");
+    qSeg.appendChild(bSTodos); qSeg.appendChild(bSLimpa); sSeg.appendChild(qSeg);
+    var chipsSeg=document.createElement("div"); chipsSeg.className="chips";
+    var segChips={};
+    SEG.forEach(function(pr){
+      var ch=mkChip(pr[1], getSeg(d,pr[0]));
+      ch.onclick=function(){ setSeg(pr[0], !getSeg(d,pr[0])); render(); marcar(); };
+      segChips[pr[0]]=ch; chipsSeg.appendChild(ch);
+    });
+    sSeg.appendChild(chipsSeg); card.appendChild(sSeg);
+    bSTodos.onclick=function(){ SEG.forEach(function(pr){ setSeg(pr[0],true); }); render(); marcar(); };
+    bSLimpa.onclick=function(){ SEG.forEach(function(pr){ setSeg(pr[0],false); }); render(); marcar(); };
+
+    var foot=document.createElement("div"); foot.className="cfoot";
+    var btSave=mkBtn("Salvar"); btSave.className="btn p"; btSave.disabled=true;
+    var sp=document.createElement("div"); sp.className="spacer";
+    var btDel=mkBtn("Apagar (voltar ao padrão)"); btDel.className="btn g sm";
+    foot.appendChild(btSave); foot.appendChild(sp); foot.appendChild(btDel); card.appendChild(foot);
+
+    btSave.onclick=async function(){
+      limpar(d); btSave.disabled=true;
+      try{
+        await rpc("admin_config_salvar",{p_senha:senha,p_id:l.id,p_dados:d,p_obs:(l.observacao||null)});
+        card.classList.remove("dirty"); l._novo=false;
+        meta.textContent="atualizado "+new Date().toLocaleString("pt-BR");
+        msg("Salvo: "+l.id+". A extensão aplica em ~5 min.");
+      }catch(e){ msg("Erro ao salvar "+l.id+": "+e.message,"err"); btSave.disabled=false; }
+    };
+    btDel.onclick=async function(){
+      if(l._novo){ card.remove(); return; }
+      btDel.disabled=true;
+      try{
+        await rpc("admin_config_apagar",{p_senha:senha,p_id:l.id});
+        card.remove(); msg("Removido: "+l.id+" (volta ao padrão).");
+      }catch(e){ msg(e.message,"err"); btDel.disabled=false; }
+    };
+
+    function ensure(obj,k){ if(!obj[k]||typeof obj[k]!=="object") obj[k]={}; return obj[k]; }
+    function setAuto(p,on){ var a=ensure(ensure(d,"ligar"),"automatico"); if(on)a[p]=true; else delete a[p]; }
+    function setSeg(p,on){ var s=ensure(ensure(d,"ligar"),"segundo_plano"); if(on)s[p]=true; else delete s[p]; }
+    function setTrava(on){ var au=ensure(ensure(d,"desligar"),"automacao"); if(on)au.todos=true; else delete au.todos; }
+
+    function render(){
+      var travado=getTrava(d);
+      tchk.checked=travado;
+      noteTrava.className="note"+(travado?" show":"");
+      AUTO.forEach(function(pr){ var ch=autoChips[pr[0]]; ch.className="chip"+(getAuto(d,pr[0])?" on":"")+(travado?" muted":""); });
+      bTodos.disabled=travado; bLimpa.disabled=travado;
+      SEG.forEach(function(pr){ segChips[pr[0]].className="chip"+(getSeg(d,pr[0])?" on":""); });
+    }
+    render();
+    return card;
+  }
+
+  function limpar(d){
+    if(d.ligar){
+      if(d.ligar.automatico && !Object.keys(d.ligar.automatico).length) delete d.ligar.automatico;
+      if(d.ligar.segundo_plano && !Object.keys(d.ligar.segundo_plano).length) delete d.ligar.segundo_plano;
+      if(!Object.keys(d.ligar).length) delete d.ligar;
+    }
+    if(d.desligar && d.desligar.automacao && !Object.keys(d.desligar.automacao).length) delete d.desligar.automacao;
+    if(d.desligar && !Object.keys(d.desligar).length) delete d.desligar;
+  }
+
+  function mkBtn(txt){ var b=document.createElement("button"); b.className="btn sm"; b.textContent=txt; return b; }
+  function mkChip(txt,on){ var c=document.createElement("div"); c.className="chip"+(on?" on":""); var dot=document.createElement("span"); dot.className="dot"; c.appendChild(dot); c.appendChild(document.createTextNode(txt)); return c; }
+})();
+</script>
+</body>
+</html>
