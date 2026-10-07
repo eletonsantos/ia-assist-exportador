@@ -644,6 +644,43 @@
                     erros (abaixo).
                 </p>
                 <p>
+                    <strong>Registro de funcionamento</strong> (a partir da versão
+                    2.1.1): para o suporte saber se a exportação automática está
+                    realmente funcionando — e não só quando falha — a extensão passa
+                    a registrar também os <strong>sucessos</strong>, no mesmo
+                    Supabase e com os mesmos identificadores (nome da empresa no IA
+                    Assist, identificador aleatório da instalação e versão).
+                    São três coisas, sempre <strong>sem dado pessoal</strong> (nunca
+                    nome, telefone, CPF/CNPJ, e-mail, placa ou endereço do segurado):
+                </p>
+                <ul>
+                    <li>
+                        <strong>Cada OS exportada com sucesso:</strong> o portal de
+                        origem, o <strong>número da OS</strong>, o nome do
+                        <strong>serviço</strong> (ex.: "ENCANADOR") e se a exportação
+                        foi automática ou feita manualmente pelo operador. É o mesmo
+                        tipo de identificação de OS que já ia nos registros de erro.
+                    </li>
+                    <li>
+                        <strong>Sinal de vida do automático:</strong> a cada portal,
+                        no máximo uma vez a cada 15 minutos, quantas OS foram lidas na
+                        tela, quantas eram novas, quantas foram exportadas e quantas
+                        falharam, e se aquele portal está pausado — apenas contadores,
+                        sem número de OS e sem dado pessoal.
+                    </li>
+                    <li>
+                        <strong>Configuração da extensão naquele computador:</strong>
+                        o que está ligado ou desligado (exportar sozinho, dar baixa,
+                        avisar serviço novo e aceitar/recusar pelo aviso, em cada
+                        portal), para o suporte ajudar sem precisar pedir prints. Não
+                        há nada do conteúdo das OS nem dado pessoal.
+                    </li>
+                </ul>
+                <p>
+                    Esses registros ficam no mesmo Supabase e <strong>desligam junto
+                    com o envio de erros</strong> (abaixo).
+                </p>
+                <p>
                     O usuário pode <strong>desligar este envio</strong> a qualquer
                     momento no popup da extensão, em "Diagnóstico e suporte" →
                     "Enviar erros automaticamente ao suporte".
