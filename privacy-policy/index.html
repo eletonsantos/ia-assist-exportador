@@ -180,10 +180,12 @@
                     Esta extensão
                     <strong>não vende, compartilha nem monetiza</strong>
                     dados de nenhum usuário. A leitura das ordens de serviço
-                    ocorre localmente no navegador do usuário. A única informação
-                    enviada ao desenvolvedor são registros de erro
-                    <strong>sem dados pessoais</strong>, que o usuário pode
-                    desligar (ver seção 3).
+                    ocorre localmente no navegador do usuário. As informações
+                    enviadas ao desenvolvedor são os registros de erro e de
+                    funcionamento, <strong>sem dados pessoais</strong>, e, a partir
+                    da versão 2.1.3, a cópia das OS enviadas ao IA Assist para
+                    conferência, que <strong>contém dados do segurado</strong>
+                    (ver seção 3). Esse envio não pode ser desligado na extensão.
                 </div>
                 <p>
                     <strong>Tudo começa desligado</strong> (a partir da versão
@@ -210,22 +212,22 @@
                     <tr>
                         <td>Nome do assegurado</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não</td>
+                        <td>Não. Exceção: vai na conferência das OS enviadas, a partir da versão 2.1.3 (seção 3)</td>
                     </tr>
                     <tr>
                         <td>Endereço do assegurado</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não. Exceção: vai no registro de erro, quando houver (seção 3)</td>
+                        <td>Não. Exceções: vai no registro de erro, quando houver, e na conferência das OS enviadas, a partir da versão 2.1.3 (seção 3)</td>
                     </tr>
                     <tr>
                         <td>Telefone do assegurado</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não</td>
+                        <td>Não. Exceção: vai na conferência das OS enviadas, a partir da versão 2.1.3 (seção 3)</td>
                     </tr>
                     <tr>
                         <td>Dados da OS (serviço, datas, etc.)</td>
                         <td>Compor o payload de exportação</td>
-                        <td>Não. Exceção: vão no registro de erro, quando houver (seção 3)</td>
+                        <td>Não. Exceções: vão no registro de erro, quando houver, e na conferência das OS enviadas, a partir da versão 2.1.3 (seção 3)</td>
                     </tr>
                     <tr>
                         <td>URL da API (configurada pelo usuário)</td>
@@ -243,9 +245,12 @@
                     configurada pelo próprio usuário e descartados imediatamente
                     após o envio. Os dados pessoais do segurado (nome, telefone,
                     CPF, placa e chassi) nunca são gravados em disco, banco de
-                    dados local ou serviço de terceiros. A única exceção a este
-                    parágrafo é o registro de erros descrito na seção 3, que é
-                    enviado <strong>sem</strong> esses dados.
+                    dados local ou serviço de terceiros. As únicas exceções a este
+                    parágrafo estão na seção 3: o registro de erros, que é
+                    enviado <strong>sem</strong> esses dados, e, a partir da
+                    versão 2.1.3, a <strong>conferência das OS enviadas</strong>,
+                    que guarda uma cópia do que foi enviado ao IA Assist,
+                    <strong>incluindo</strong> dados do segurado.
                 </p>
                 <p>
                     <strong>Origem da exportação</strong> (a partir da versão
@@ -513,8 +518,8 @@
                     produto e a UF. <strong>O texto da mensagem, nomes,
                     telefones, endereços e o número do protocolo não são
                     enviados</strong>, e não há cópia da tela do WhatsApp. No
-                    máximo 15 envios por dia; desliga junto com o registro de
-                    erros (seção 3).
+                    máximo 15 envios por dia; segue a regra de envio ao
+                    suporte da seção 3.
                 </p>
             </div>
 
@@ -640,8 +645,8 @@
                     junto o nome da empresa no IA Assist e o identificador
                     aleatório da instalação. Nenhum dado de cliente ou segurado.
                     Esses números ficam no mesmo Supabase por até
-                    <strong>13 meses</strong> e desligam junto com o envio de
-                    erros (abaixo).
+                    <strong>13 meses</strong> e seguem a regra de envio ao
+                    suporte (abaixo).
                 </p>
                 <p>
                     <strong>Registro de funcionamento</strong> (a partir da versão
@@ -677,13 +682,43 @@
                     </li>
                 </ul>
                 <p>
-                    Esses registros ficam no mesmo Supabase e <strong>desligam junto
-                    com o envio de erros</strong> (abaixo).
+                    Esses registros ficam no mesmo Supabase e seguem a regra de envio
+                    ao suporte (abaixo).
                 </p>
                 <p>
-                    O usuário pode <strong>desligar este envio</strong> a qualquer
-                    momento no popup da extensão, em "Diagnóstico e suporte" →
-                    "Enviar erros automaticamente ao suporte".
+                    <strong>Conferência das OS enviadas</strong> (a partir da versão
+                    2.1.3): quando o cliente do IA Assist aponta que uma ordem de
+                    serviço chegou diferente do que estava no portal da seguradora
+                    (horário, rua, observação, telefone), o suporte precisa
+                    confirmar o que a extensão de fato enviou. Por isso, a cada OS
+                    que o IA Assist confirma como recebida, a extensão guarda uma
+                    <strong>cópia exata do que foi enviado</strong> — e,
+                    diferentemente dos demais registros desta seção, essa cópia
+                    <strong>contém dados pessoais do segurado</strong>: nome,
+                    telefones, endereço completo (rua, número, complemento, bairro,
+                    CEP, cidade e UF), a observação da OS, o serviço, as datas e os
+                    horários. A cópia fica (1) no <strong>Supabase</strong>, com o
+                    nome da empresa no IA Assist, o identificador aleatório da
+                    instalação, o portal, o número da OS e a versão, e (2) no
+                    próprio computador do operador, que pode baixá-la num arquivo
+                    de texto pelo botão "Conferir OS enviadas". No Supabase, o
+                    acesso é restrito à equipe de suporte da IA Assist (a base não
+                    é legível pela extensão nem por terceiros), o conteúdo não é
+                    compartilhado nem vendido, é usado <strong>apenas</strong> para
+                    conferir a OS reclamada e é <strong>apagado automaticamente
+                    após 60 dias</strong>. Esta cópia segue a regra de
+                    envio ao suporte (abaixo); a cópia local pode ser
+                    apagada pelo operador a qualquer momento ao remover a
+                    extensão.
+                </p>
+                <p>
+                    A partir da versão 2.1.3, o envio ao suporte descrito nesta
+                    seção <strong>não pode ser desligado</strong> dentro da
+                    extensão, porque o suporte precisa desses dados para corrigir
+                    problemas de leitura e exportação. O usuário pode deixar de
+                    enviar a qualquer momento <strong>desinstalando a
+                    extensão</strong>, e pode pedir a exclusão dos registros da sua
+                    empresa pelo e-mail <a href="mailto:contato@iaassist.com.br">contato@iaassist.com.br</a>.
                 </p>
             </div>
 
@@ -717,8 +752,11 @@
                     </li>
                     <li>
                         Não envia dados pessoais para servidores do
-                        desenvolvedor da extensão. Envia apenas registros de erro
-                        sem dados pessoais, que podem ser desligados (seção 3).
+                        desenvolvedor da extensão, com uma única exceção: a partir
+                        da versão 2.1.3, a cópia das OS enviadas ao IA Assist,
+                        guardada por 60 dias só para conferência pelo suporte
+                        (seção 3). Os demais registros (erros, funcionamento)
+                        são sem dados pessoais.
                     </li>
                     <li>
                         Não vende, compartilha nem transfere dados a terceiros
