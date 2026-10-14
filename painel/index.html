@@ -83,6 +83,15 @@
   .note{background:var(--dangerbg);color:var(--danger);font-size:12px;border-radius:8px;padding:7px 10px;margin-top:8px;display:none}
   .note.show{display:block}
   footer{color:var(--mut);font-size:12px;text-align:center;margin:18px 0 6px;line-height:1.6}
+  .tabs{display:flex;gap:6px;margin:14px 0 4px;border-bottom:1px solid var(--line)}
+  .tab{font:700 13px var(--body);background:none;border:0;border-bottom:2px solid transparent;color:var(--mut);padding:8px 12px;cursor:pointer;margin-bottom:-1px}
+  .tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+  .os-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 16px;margin-top:10px}
+  .os-f span{display:block;font-size:11px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+  .os-f div{font-size:14px;word-break:break-word}
+  .os-obs{margin-top:10px;background:var(--surface2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13.5px;white-space:pre-wrap;word-break:break-word}
+  .aviso{background:var(--dangerbg);color:var(--danger);font-size:12px;border-radius:8px;padding:8px 10px;margin:10px 0}
+  .vazio{color:var(--mut);text-align:center;padding:28px 0}
   code{background:var(--surface2);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:12px}
 </style>
 </head>
@@ -92,7 +101,7 @@
     <div class="logo">IA</div>
     <div>
       <h1>Painel do Exportador</h1>
-      <div class="sub">Liga/desliga o automático e o segundo plano por cliente — a extensão obedece em ~5 min.</div>
+      <div class="sub">Liga/desliga o automático e o segundo plano por cliente e confere as OS enviadas ao IA Assist.</div>
     </div>
     <div class="spacer"></div>
     <button class="btn g sm" id="btLock" hidden>Trancar</button>
@@ -117,6 +126,11 @@
   </div>
 
   <div id="panel" hidden>
+    <div class="tabs">
+      <button class="tab on" id="tabCli" type="button">Clientes</button>
+      <button class="tab" id="tabOs" type="button">Conferir OS enviadas</button>
+    </div>
+    <div id="secCli">
     <div class="toolbar">
       <input type="text" id="novoId" placeholder="subdomínio do cliente (ex.: ilhabella)" style="max-width:280px">
       <button class="btn" id="btAdd">+ Adicionar cliente</button>
@@ -128,6 +142,17 @@
       O <b>desligar</b> tem prioridade sobre o <b>ligar</b> (a trava vence). O painel força a configuração: se o cliente mudar no popup, aqui religa no próximo ciclo.<br>
       O cliente precisa estar na versão <code>2.1.1</code> ou superior.
     </footer>
+    </div>
+    <div id="secOs" hidden>
+      <div class="aviso">Dados pessoais do segurado. Use só para conferir uma OS reclamada pelo cliente; não copie para fora do atendimento.</div>
+      <div class="toolbar">
+        <input type="text" id="osBusca" placeholder="nº da OS (ou parte)" style="max-width:220px">
+        <input type="text" id="osEmpresa" placeholder="empresa (ex.: negrini)" style="max-width:200px">
+        <button class="btn p" id="btOsBuscar">Buscar</button>
+      </div>
+      <div id="osRes"></div>
+      <footer>Mostra o que a extensão <b>enviou</b> ao IA Assist (versão <code>2.1.3</code> ou superior). Guardado por 60 dias; reenvio da mesma OS fica só com o último.</footer>
+    </div>
   </div>
 </div>
 
@@ -184,7 +209,7 @@
       senha=pw; await carregar();
       if($("logRemember").checked){ try{ localStorage.setItem(LS,pw); }catch(e){} }
       show($("gateLogin"),false); clearMsg();
-    }catch(e){ senha=""; msg("Senha incorreta.","err"); }
+    }catch(e){ senha=""; msg("Senha incorreta (ou muitas tentativas erradas — espere 15 min).","err"); }
     $("btLogin").disabled=false;
   }
 
@@ -192,7 +217,10 @@
   $("btReload").onclick=function(){ carregar().catch(function(e){ msg(e.message,"err"); }); };
 
   async function carregar(){
-    var linhas=await rpc("admin_config_listar",{p_senha:senha});
+    // 14/10/2026: senha errada não vira mais erro no servidor (para a tentativa ser
+    // contada na trava de 20/15 min) — então confere antes de listar.
+    if(!(await rpc("admin_config_ok",{p_senha:senha}))) throw new Error("senha incorreta");
+    var linhas=await rpc("admin_config_listar",{p_senha:senha}) || [];
     show($("panel"),true); show($("btLock"),true);
     var byId={}; (linhas||[]).forEach(function(l){ byId[l.id]=l; });
     if(!byId.global) linhas.unshift({id:"global",dados:{},observacao:null,atualizado_em:null});
@@ -276,7 +304,8 @@
     btSave.onclick=async function(){
       limpar(d); btSave.disabled=true;
       try{
-        await rpc("admin_config_salvar",{p_senha:senha,p_id:l.id,p_dados:d,p_obs:(l.observacao||null)});
+        var rs=await rpc("admin_config_salvar",{p_senha:senha,p_id:l.id,p_dados:d,p_obs:(l.observacao||null)});
+        if(String(rs).indexOf("ok")!==0) throw new Error(String(rs));
         card.classList.remove("dirty"); l._novo=false;
         meta.textContent="atualizado "+new Date().toLocaleString("pt-BR");
         msg("Salvo: "+l.id+". A extensão aplica em ~5 min.");
@@ -286,7 +315,8 @@
       if(l._novo){ card.remove(); return; }
       btDel.disabled=true;
       try{
-        await rpc("admin_config_apagar",{p_senha:senha,p_id:l.id});
+        var ra=await rpc("admin_config_apagar",{p_senha:senha,p_id:l.id});
+        if(String(ra).indexOf("ok")!==0) throw new Error(String(ra));
         card.remove(); msg("Removido: "+l.id+" (volta ao padrão).");
       }catch(e){ msg(e.message,"err"); btDel.disabled=false; }
     };
@@ -316,6 +346,59 @@
     }
     if(d.desligar && d.desligar.automacao && !Object.keys(d.desligar.automacao).length) delete d.desligar.automacao;
     if(d.desligar && !Object.keys(d.desligar).length) delete d.desligar;
+  }
+
+  // v2.1.3: aba "Conferir OS enviadas" — lê public.admin_os_enviadas (mesma senha do painel).
+  function aba(os){
+    $("tabCli").className="tab"+(os?"":" on"); $("tabOs").className="tab"+(os?" on":"");
+    show($("secCli"),!os); show($("secOs"),os);
+    if(os) $("osBusca").focus();
+  }
+  $("tabCli").onclick=function(){ aba(false); };
+  $("tabOs").onclick=function(){ aba(true); };
+  $("btOsBuscar").onclick=buscarOs;
+  ["osBusca","osEmpresa"].forEach(function(id){ $(id).addEventListener("keydown",function(e){ if(e.key==="Enter") buscarOs(); }); });
+  var CAMPOS_OS=[["Segurado","segurado"],["Telefone 1","telefone_1"],["Telefone 2","telefone_2"],["Serviço","servico"],["Produto","produto"],["Seguradora","seguradora"],
+    ["Rua","rua"],["Número","numero"],["Complemento","complemento"],["Bairro","bairro"],["Cidade / UF",null],["CEP","cep"],
+    ["Data acionamento","data_acionamento"],["Data programada","data_programada"],["Horário",null],["Minutos","minutos"]];
+  function dataBr(v){ if(!v) return ""; var t=String(v).replace(" ","T"); var d=new Date(t); return isNaN(d)?String(v):d.toLocaleString("pt-BR"); }
+  async function buscarOs(){
+    var b=($("osBusca").value||"").trim(), e=($("osEmpresa").value||"").trim().toLowerCase();
+    if(!b && !e){ msg("Digite o nº da OS ou a empresa.","err"); return; }
+    var res=$("osRes"); res.textContent=""; $("btOsBuscar").disabled=true;
+    try{
+      var linhas=await rpc("admin_os_enviadas",{p_senha:senha,p_busca:b,p_empresa:e,p_limite:50});
+      if(!linhas||!linhas.length){ var v=document.createElement("div"); v.className="vazio"; v.textContent="Nenhuma OS enviada encontrada."; res.appendChild(v); }
+      else linhas.forEach(function(l){ res.appendChild(cardOs(l)); });
+    }catch(err){ msg(err.message,"err"); }
+    $("btOsBuscar").disabled=false;
+  }
+  function cardOs(l){
+    var card=document.createElement("div"); card.className="card";
+    var head=document.createElement("div"); head.className="chead";
+    var cid=document.createElement("div"); cid.className="cid"; cid.textContent="OS "+l.nro_os;
+    var meta=document.createElement("div"); meta.className="cmeta";
+    meta.textContent=[l.empresa,l.portal,(l.origem==="automatico"?"automático":"manual"),"enviada "+dataBr(l.enviada_em)+(l.ocorrencias>1?" ("+l.ocorrencias+"× enviada)":""),"v"+(l.versao||"?")].join(" · ");
+    head.appendChild(cid); head.appendChild(meta); card.appendChild(head);
+    var grid=document.createElement("div"); grid.className="os-grid";
+    CAMPOS_OS.forEach(function(c){
+      var val = c[0]==="Cidade / UF" ? [l.cidade,l.uf].filter(Boolean).join(" / ")
+              : c[0]==="Horário" ? [l.hora_inicial,l.hora_final].filter(Boolean).join(" às ")
+              : l[c[1]];
+      var f=document.createElement("div"); f.className="os-f";
+      var sp=document.createElement("span"); sp.textContent=c[0];
+      var dv=document.createElement("div"); dv.textContent=(val===null||val===undefined||val==="")?"—":String(val);
+      f.appendChild(sp); f.appendChild(dv); grid.appendChild(f);
+    });
+    card.appendChild(grid);
+    var obs=document.createElement("div"); obs.className="os-obs"; obs.textContent="Observação: "+(l.observacao||"—"); card.appendChild(obs);
+    var foot=document.createElement("div"); foot.className="cfoot";
+    var bt=mkBtn("Copiar o JSON enviado"); bt.onclick=function(){
+      var t=JSON.stringify(l.payload||{},null,2);
+      (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){ msg("JSON copiado."); },function(){ msg("Não consegui copiar.","err"); });
+    };
+    foot.appendChild(bt); card.appendChild(foot);
+    return card;
   }
 
   function mkBtn(txt){ var b=document.createElement("button"); b.className="btn sm"; b.textContent=txt; return b; }
