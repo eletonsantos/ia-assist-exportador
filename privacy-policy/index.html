@@ -157,7 +157,7 @@
             <h1>Política de Privacidade</h1>
             <p>
                 IA Assist Exportador de Serviços &nbsp;·&nbsp; Última
-                atualização: outubro de 2026
+                atualização: 15 de outubro de 2026
             </p>
         </header>
 
@@ -181,8 +181,9 @@
                     <strong>não vende, compartilha nem monetiza</strong>
                     dados de nenhum usuário. A leitura das ordens de serviço
                     ocorre localmente no navegador do usuário. As informações
-                    enviadas ao desenvolvedor são os registros de erro e de
-                    funcionamento, <strong>sem dados pessoais</strong>, e, a partir
+                    enviadas ao desenvolvedor são os registros de erro, de
+                    funcionamento e de uso das telas do IA Assist (seção 4),
+                    <strong>sem dados pessoais</strong>, e, a partir
                     da versão 2.1.3, a cópia das OS enviadas ao IA Assist para
                     conferência, que <strong>contém dados do segurado</strong>
                     (ver seção 3). Esse envio não pode ser desligado na extensão.
@@ -723,15 +724,98 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">4</span>O que a extensão NÃO faz</h2>
+                <h2><span class="num">4</span>Uso das telas do IA Assist</h2>
+                <p>
+                    A partir da versão 2.1.5, nas telas do próprio
+                    <strong>IA Assist</strong> (e só nelas — nunca nos portais das
+                    seguradoras nem no WhatsApp Web), a extensão mede
+                    <strong>quais telas cada empresa usa e por quanto tempo</strong>.
+                    O objetivo é melhorar o IA Assist e planejar a próxima versão
+                    do sistema: saber o que os clientes mais usam e o que quase
+                    ninguém usa.
+                </p>
+                <table>
+                    <tr>
+                        <th>Dado medido</th>
+                        <th>Como é medido</th>
+                    </tr>
+                    <tr>
+                        <td>Tela (rota)</td>
+                        <td>
+                            O caminho do endereço da tela, com qualquer número ou
+                            código trocado por <code>:id</code> (ex.:
+                            <code>core/pessoa/:id</code>). Os parâmetros de busca
+                            do endereço são descartados.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Tempo ativo</td>
+                        <td>
+                            Contado só com a aba visível, em foco e com uso
+                            recente (mouse, teclado ou rolagem nos últimos 2
+                            minutos). Aba esquecida aberta não conta.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Visitas</td>
+                        <td>Quantas vezes a tela foi aberta.</td>
+                    </tr>
+                    <tr>
+                        <td>Ações</td>
+                        <td>
+                            O <strong>rótulo</strong> do botão, aba ou item de menu
+                            clicado (ex.: "Salvar", "aba: Custos", "menu:
+                            Clientes") e, num link, apenas a tela de destino (ex.:
+                            "link: → core/pessoa/:id"), com a contagem de cliques.
+                        </td>
+                    </tr>
+                </table>
+                <div class="highlight">
+                    <strong>Nunca é coletado:</strong> nada do que é digitado
+                    (campos, formulários ou buscas), o nome do usuário ou do
+                    operador logado, o texto dos links e o texto de dentro das
+                    tabelas (que podem conter nome de cliente). Rótulo com número,
+                    com <code>@</code> ou com mais de 40 caracteres é trocado por um
+                    genérico (ex.: "[botão]"). Esse filtro é aplicado na página, de
+                    novo na extensão e mais uma vez no servidor.
+                </div>
+                <p>
+                    Os dados são somados <strong>por empresa</strong> (o nome da
+                    empresa no IA Assist) e <strong>por computador</strong> (o
+                    identificador aleatório da instalação, que não identifica a
+                    pessoa), por dia e hora, junto com a versão da extensão. Não
+                    há dado de cliente ou de segurado.
+                </p>
+                <p>
+                    A soma é enviada a cada 15 minutos ao
+                    <strong>Supabase</strong>, em servidores localizados em São
+                    Paulo (Brasil), o mesmo da seção 3. Só a equipe da IA Assist
+                    tem acesso de leitura (a base não é legível pela extensão nem
+                    por terceiros); os dados não são compartilhados nem vendidos e
+                    ficam guardados por até <strong>12 meses</strong>. Esta
+                    medição segue a regra de envio ao suporte da seção 3: não pode
+                    ser desligada dentro da extensão, o usuário pode parar o envio
+                    desinstalando a extensão e pode pedir a exclusão dos dados da
+                    sua empresa pelo e-mail
+                    <a href="mailto:contato@iaassist.com.br">contato@iaassist.com.br</a>.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2><span class="num">5</span>O que a extensão NÃO faz</h2>
                 <ul class="no-list">
-                    <li>Não rastreia histórico de navegação</li>
+                    <li>
+                        Não rastreia histórico de navegação (no IA Assist, mede
+                        só quais telas são usadas, sem números nem buscas —
+                        seção 4)
+                    </li>
                     <li>
                         Não monitora atividade do usuário (cliques, teclado,
                         mouse), exceto a sequência de passos de aceite e recusa
                         de serviço nos portais e o nome do botão de ação ligado a
-                        uma chamada do portal, descritos na seção 3 (sem o que
-                        foi digitado)
+                        uma chamada do portal, descritos na seção 3, e o rótulo
+                        dos botões, abas e menus clicados nas telas do IA Assist,
+                        descrito na seção 4 (nunca o que foi digitado)
                     </li>
                     <li>
                         Não acessa páginas fora dos portais de seguradora
@@ -755,8 +839,8 @@
                         desenvolvedor da extensão, com uma única exceção: a partir
                         da versão 2.1.3, a cópia das OS enviadas ao IA Assist,
                         guardada por 60 dias só para conferência pelo suporte
-                        (seção 3). Os demais registros (erros, funcionamento)
-                        são sem dados pessoais.
+                        (seção 3). Os demais registros (erros, funcionamento,
+                        uso das telas do IA Assist) são sem dados pessoais.
                     </li>
                     <li>
                         Não vende, compartilha nem transfere dados a terceiros
@@ -766,7 +850,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">5</span>Armazenamento local</h2>
+                <h2><span class="num">6</span>Armazenamento local</h2>
                 <p>
                     A extensão utiliza
                     <strong>chrome.storage.sync</strong> exclusivamente para
@@ -799,7 +883,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">6</span>Segurança</h2>
+                <h2><span class="num">7</span>Segurança</h2>
                 <ul class="ok-list">
                     <li>
                         Toda comunicação com a API ocorre exclusivamente via
@@ -826,7 +910,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">7</span>Permissões utilizadas</h2>
+                <h2><span class="num">8</span>Permissões utilizadas</h2>
                 <table>
                     <tr>
                         <th>Permissão</th>
@@ -882,7 +966,7 @@
             </div>
 
             <div class="card">
-                <h2><span class="num">8</span>Contato</h2>
+                <h2><span class="num">9</span>Contato</h2>
                 <p>
                     Em caso de dúvidas sobre esta Política de Privacidade, entre
                     em contato com o desenvolvedor responsável pela extensão
